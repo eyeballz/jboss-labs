@@ -1,0 +1,8 @@
+# vim: ft=yaml
+#
+# OS family map to be merged into repos/map.jinja
+
+Debian: {}
+RedHat: {}
+Suse: {}
+Arch: {}

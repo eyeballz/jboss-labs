@@ -1,0 +1,87 @@
+# vim: ft=yaml
+---
+
+#
+# Java Archives provide the SDK for the version of java required
+#
+# https://www.oracle.com/java/technologies/oracle-java-archive-downloads.html
+#
+#
+
+driver:
+  name: vagrant
+  customize: 
+    memory: 1024
+
+provisioner:
+  name: salt_solo
+  is_file_root: true
+  salt_copy_filter:
+    - .kitchen
+    - .git
+    - .vagrant
+  state_top:
+    base:
+      "*":
+        - test.mockup
+        - jboss
+
+platforms:
+  - name: bento/ubuntu-18.04
+    driver:
+      network:
+        - ["forwarded_port", {guest: 8080, host: 8080}]
+
+suites:
+  - name: default
+
+  - name: custom
+    provisioner:
+      pillars-from-files:
+        jboss.sls: pillar-custom.sls
+      pillars:
+        top.sls:
+          base:
+            "*":
+              - jboss
+
+  - name: v6u45
+    provisioner:
+      pillars-from-files:
+        jboss.sls: pillar-custom-v6u45.sls
+      pillars:
+        top.sls:
+          base:
+            "*":
+              - jboss
+
+  - name: v5.1
+    provisioner:
+      pillars-from-files:
+        jboss.sls: pillar-custom-v51.sls
+      pillars:
+        top.sls:
+          base:
+            "*":
+              - jboss
+
+  - name: v4.2.3
+    provisioner:
+      pillars-from-files:
+        jboss.sls: pillar-custom-v423.sls
+      pillars:
+        top.sls:
+          base:
+            "*":
+              - jboss
+
+
+verifier:
+  name: shell
+  command: >
+    pytest -v
+    --sudo
+    --color=yes
+    --hosts="paramiko://${KITCHEN_USERNAME}@${KITCHEN_HOSTNAME}:${KITCHEN_PORT}?ssh_identity_file=${KITCHEN_SSH_KEY}"
+    --junit-xml "junit-${KITCHEN_INSTANCE}.xml"
+    "test/integration/${KITCHEN_SUITE}"

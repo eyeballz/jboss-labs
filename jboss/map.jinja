@@ -1,0 +1,21 @@
+# vim: ft=jinja
+# This file handles the merging of pillar data with the data from defaults
+
+{# Start with  defaults from defaults.yml #}
+{% import_yaml 'jboss/defaults.yml' as default_settings %}
+
+{# Import OS family and codename maps for OS specific default overrides #}
+{% import_yaml 'jboss/osfamilymap.yml' as osfamilymap %}
+{% import_yaml 'jboss/oscodenamemap.yml' as oscodenamemap %}
+
+{% set defaults = salt['grains.filter_by'](default_settings,
+    default='jboss',
+    merge=salt['grains.filter_by'](osfamilymap, grain='os_family',
+        merge=salt['grains.filter_by'](oscodenamemap, grain='oscodename',
+            merge=salt['pillar.get']('jboss:lookup', default={})
+        )
+    )
+) %}
+
+{# Merge in jboss pillar data #}
+{% set jboss = salt['pillar.get']('jboss', default=defaults, merge=True) %}

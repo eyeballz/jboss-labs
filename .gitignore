@@ -1,0 +1,9 @@
+.kitchen
+.kitchen.local.yml
+.vagrant
+.DS_store
+*.swp
+*.lock
+*pycache*
+junit*.xml
+venv/

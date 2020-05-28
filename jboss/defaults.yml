@@ -1,0 +1,7 @@
+# vim: ft=yaml
+# Defaults for jboss
+
+jboss:
+  enabled: false
+  pkg: screen
+

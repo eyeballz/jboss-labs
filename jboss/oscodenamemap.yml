@@ -1,0 +1,8 @@
+# vim: ft=yaml
+#
+# OS codename map to be merged into repos/map.jinja
+
+jessie: {}
+stretch: {}
+buster: {}
+'CentOS Linux 7 (Core)': {}
